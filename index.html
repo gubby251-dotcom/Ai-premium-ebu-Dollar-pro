@@ -217,6 +217,61 @@
                 btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
             }
         }
-    </script>
-</body>
-</html>
+    <script>
+    async function runAnalysis() {
+        const sym = document.getElementById('symbol').value;
+        const btn = document.getElementById('analyze-btn');
+        
+        btn.innerHTML = '<span>FETCHING LIVE MARKET...</span> ⏳';
+        
+        let livePrice = 0;
+        let decimals = 2;
+        let pipDistance = 50.00; // Skala pips dasar
+
+        try {
+            if (sym === 'BTCUSD') {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+                const data = await res.json();
+                livePrice = parseFloat(data.price);
+                decimals = 2;
+                pipDistance = 110.00; // Jarak pullback ideal untuk BTC (sekitar $110 ke sumbu bawah)
+            } else if (sym === 'XAUUSD') {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+                const data = await res.json();
+                livePrice = parseFloat(data.price);
+                decimals = 2;
+                pipDistance = 5.00; // Jarak pullback ideal Emas ($5.00)
+            } else if (sym === 'EURUSD') {
+                const res = await fetch('https://open.er-api.com/v6/latest/EUR');
+                const data = await res.json();
+                livePrice = parseFloat(data.rates.USD);
+                decimals = 5;
+                pipDistance = 0.00300;
+            }
+
+            // Logika Pullback ke Sumbu/Base Engulfing
+            const entry = livePrice - pipDistance;               // Buy Limit di area sumbu/base bawah (contoh: 62954)
+            const sl = entry - (pipDistance * 0.8);              // SL di bawah ekor sumbu
+            const tp = livePrice + (pipDistance * 0.3);          // TP di atas running high (Resistance)
+
+            const demandLow = (entry - (pipDistance * 0.3)).toFixed(decimals);
+            const demandHigh = entry.toFixed(decimals);
+
+            // Update UI Dashboard
+            document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
+            document.getElementById('sl-val').innerText = sl.toFixed(decimals);
+            document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
+
+            document.getElementById('sd-range').innerText = `${demandLow} - ${demandHigh}`;
+            document.getElementById('snr-val').innerText = sl.toFixed(decimals);
+            document.getElementById('key-val').innerText = tp.toFixed(decimals);
+
+        } catch (error) {
+            alert('Gagal mengambil data harga live. Pastikan koneksi internet stabil.');
+            console.error(error);
+        } finally {
+            btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
+        }
+    }
+</script>
+
