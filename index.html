@@ -273,5 +273,62 @@
             btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
         }
     }
+<script>
+    async function runAnalysis() {
+        const sym = document.getElementById('symbol').value;
+        const btn = document.getElementById('analyze-btn');
+        
+        btn.innerHTML = '<span>FETCHING LIVE MARKET...</span> ⏳';
+        
+        let livePrice = 0;
+        let decimals = 2;
+        let pullbackOffset = 110.00; // Jarak diskon pullback ke sumbu bawah
+
+        try {
+            if (sym === 'BTCUSD') {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+                const data = await res.json();
+                livePrice = parseFloat(data.price);
+                decimals = 2;
+                pullbackOffset = 110.00; // Mengunci pullback BTC ke area sumbu bawah (62954)
+            } else if (sym === 'XAUUSD') {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+                const data = await res.json();
+                livePrice = parseFloat(data.price);
+                decimals = 2;
+                pullbackOffset = 5.00;
+            } else if (sym === 'EURUSD') {
+                const res = await fetch('https://open.er-api.com/v6/latest/EUR');
+                const data = await res.json();
+                livePrice = parseFloat(data.rates.USD);
+                decimals = 5;
+                pullbackOffset = 0.00300;
+            }
+
+            // KUNCI UTAMA: Entry dipaksa berada di area Pullback (Sumbu Engulfing)
+            const entry = livePrice - pullbackOffset;          // Titik Buy Limit di sumbu bawah
+            const sl = entry - 50.00;                          // Stop Loss di bawah sumbu
+            const tp = livePrice + 50.00;                      // Take Profit kembali ke running high
+
+            const demandLow = (entry - 25.00).toFixed(decimals);
+            const demandHigh = entry.toFixed(decimals);
+
+            // Update UI
+            document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
+            document.getElementById('sl-val').innerText = sl.toFixed(decimals);
+            document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
+
+            document.getElementById('sd-range').innerText = `${demandLow} - ${demandHigh}`;
+            document.getElementById('snr-val').innerText = sl.toFixed(decimals);
+            document.getElementById('key-val').innerText = tp.toFixed(decimals);
+
+        } catch (error) {
+            alert('Gagal mengambil data pasar live.');
+            console.error(error);
+        } finally {
+            btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
+        }
+    }
 </script>
+
 
