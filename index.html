@@ -1,334 +1,139 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEBU DOLLAR - AI Market Analysis Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #0b0f17; color: #f3f4f6; }
-        .card-bg { background: linear-gradient(145deg, #131b2e, #111827); }
-        .glow-btn { background: linear-gradient(90deg, #06b6d4, #3b82f6); }
-        .glow-btn:hover { box-shadow: 0 0 25px rgba(6, 182, 212, 0.5); }
-        .text-neon-green { color: #10b981; }
-        .text-neon-red { color: #ef4444; }
-    </style>
-</head>
-<body class="p-4 md:p-8 max-w-xl mx-auto min-h-screen flex flex-col justify-between">
-
-    <div>
-        <!-- Top Navbar -->
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex items-center space-x-2">
-                <span>👑</span>
-                <span class="font-bold text-amber-400 tracking-wider text-sm">PREMIUM AI</span>
-            </div>
-            <div class="flex items-center space-x-2 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-xs text-emerald-400 font-semibold tracking-wide">SYSTEM READY</span>
-            </div>
-        </div>
-
-        <!-- Header Brand -->
-        <div class="text-center my-6">
-            <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                <span class="text-3xl">💰</span>
-            </div>
-            <h1 class="text-2xl font-black tracking-widest text-white uppercase">SEBU DOLLAR</h1>
-            <p class="text-xs text-cyan-400 tracking-wider font-semibold mt-1">TRADE & EDUCATION</p>
-            <div class="inline-block mt-3 bg-slate-800/80 border border-slate-700 text-slate-300 text-xs px-3 py-1 rounded-lg">
-                🤖 AI MARKET ANALYSIS DASHBOARD
-            </div>
-        </div>
-
-        <!-- Market Analysis Panel -->
-        <div class="card-bg border border-slate-800 rounded-2xl p-5 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">MARKET ANALYSIS</h2>
-                    <p class="text-[11px] text-slate-500 mt-0.5">H1 Engulfing + SND/SNR | M5 Entry (SL/TP 50 Pips RR 1:1)</p>
-                </div>
-                <span class="bg-blue-600/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-md border border-blue-500/30">AI</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 mb-5">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">PAIR / SYMBOL</label>
-                    <select id="symbol" class="w-full bg-slate-900 border border-slate-700 text-sm rounded-xl p-2.5 text-white font-medium focus:outline-none focus:border-cyan-500">
-                        <option value="BTCUSD">₿ BTCUSD</option>
-                        <option value="XAUUSD">🥇 XAUUSD</option>
-                        <option value="EURUSD">💶 EURUSD</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">TIMEFRAME</label>
-                    <select class="w-full bg-slate-900 border border-slate-700 text-sm rounded-xl p-2.5 text-white font-medium focus:outline-none focus:border-cyan-500">
-                        <option>⏱️ M5 (Entry Zone)</option>
-                    </select>
-                </div>
-            </div>
-
-            <button onclick="runAnalysis()" id="analyze-btn" class="w-full glow-btn text-white font-bold py-3.5 px-4 rounded-xl text-sm tracking-wider uppercase transition-all duration-300 flex items-center justify-center space-x-2">
-                <span>ANALYZE MARKET</span> 🚀
-            </button>
-        </div>
-
-        <!-- Analysis Overview -->
-        <div class="mb-6">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    📈 ANALYSIS OVERVIEW
-                </h3>
-                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-semibold">LIVE</span>
-            </div>
-
-            <div class="grid grid-cols-4 gap-2 text-center">
-                <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl">
-                    <p class="text-[10px] text-slate-500 uppercase font-semibold">TREND H1</p>
-                    <p class="text-xs font-bold text-neon-green mt-1">BULLISH ↗️</p>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl">
-                    <p class="text-[10px] text-slate-500 uppercase font-semibold">ENTRY M5</p>
-                    <p class="text-xs font-bold text-neon-green mt-1">CONFIRMED</p>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl">
-                    <p class="text-[10px] text-slate-500 uppercase font-semibold">BIAS</p>
-                    <p class="text-xs font-bold text-neon-green mt-1">LONG</p>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl">
-                    <p class="text-[10px] text-slate-500 uppercase font-semibold">CONFIDENCE</p>
-                    <p class="text-xs font-bold text-cyan-400 mt-1">85%</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- AI Trade Setup -->
-        <div class="card-bg border border-slate-800 rounded-2xl p-5 mb-6">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-1.5">
-                🎯 AI TRADE SETUP (RR 1:1 | 50 PIPS)
-            </h3>
-
-            <div class="grid grid-cols-3 gap-3">
-                <!-- Direction -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col justify-between text-center">
-                    <p class="text-[10px] text-slate-500 uppercase font-bold">DIRECTION</p>
-                    <p class="text-xl font-black text-neon-green my-2">BUY ↗️</p>
-                    <span class="text-2xl">🐂</span>
-                </div>
-
-                <!-- Price Levels -->
-                <div class="col-span-2 space-y-2">
-                    <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center">
-                        <span class="text-[11px] text-slate-400 font-medium">ENTRY ZONE (M5)</span>
-                        <span id="entry-zone" class="text-sm font-bold text-white">0.00</span>
-                    </div>
-                    <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center">
-                        <span class="text-[11px] text-slate-400 font-medium">STOP LOSS (-50 Pips)</span>
-                        <span id="sl-val" class="text-sm font-bold text-neon-red">0.00</span>
-                    </div>
-                    <div class="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center">
-                        <span class="text-[11px] text-slate-400 font-medium">TAKE PROFIT (+50 Pips)</span>
-                        <span id="tp1-val" class="text-sm font-bold text-neon-green">0.00</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Market Insights -->
-        <div class="mb-6">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                💡 MARKET INSIGHTS
-            </h3>
-            <div class="grid grid-cols-4 gap-2 text-center text-[10px]">
-                <div class="bg-slate-900/80 border border-slate-800 p-2 rounded-xl">
-                    <p class="text-slate-500 font-semibold">SUPPLY / DEMAND</p>
-                    <p id="sd-range" class="font-bold text-neon-green mt-1">-</p>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-2 rounded-xl">
-                    <p class="text-slate-500 font-semibold">SNR LEVEL</p>
-                    <p id="snr-val" class="font-bold text-cyan-400 mt-1">-</p>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-2 rounded-xl">
-                    <p class="text-slate-500 font-semibold">KEY LEVEL</p>
-                    <p id="key-val" class="font-bold text-neon-red mt-1">-</p>
-                </div>
-                <div class="bg-slate-900/80 border border-slate-800 p-2 rounded-xl">
-                    <p class="text-slate-500 font-semibold">VOLATILITY</p>
-                    <p class="font-bold text-amber-400 mt-1">MEDIUM</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Warning Footer -->
-    <div class="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] p-3 rounded-xl text-center">
-        ⚠️ Analisis ini hanya alat bantu. Selalu lakukan konfirmasi sendiri sebelum mengambil keputusan trading.
-    </div>
-
-    <!-- Live Market API Logic -->
-    <script>
-        async function runAnalysis() {
-            const sym = document.getElementById('symbol').value;
-            const btn = document.getElementById('analyze-btn');
-            
-            btn.innerHTML = '<span>FETCHING LIVE MARKET...</span> ⏳';
-            
-            let livePrice = 0;
-            let decimals = 2;
-            let pipDistance = 5.00;
-
-            try {
-                if (sym === 'BTCUSD') {
-                    const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-                    const data = await res.json();
-                    livePrice = parseFloat(data.price);
-                    decimals = 2;
-                    pipDistance = 50.00;
-                } else if (sym === 'XAUUSD') {
-                    const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-                    const data = await res.json();
-                    livePrice = parseFloat(data.price);
-                    decimals = 2;
-                    pipDistance = 5.00;
-                } else if (sym === 'EURUSD') {
-                    const res = await fetch('https://open.er-api.com/v6/latest/EUR');
-                    const data = await res.json();
-                    livePrice = parseFloat(data.rates.USD);
-                    decimals = 5;
-                    pipDistance = 0.00500;
-                }
-
-                const entry = livePrice;
-                const sl = entry - pipDistance;
-                const tp = entry + pipDistance;
-
-                document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
-                document.getElementById('sl-val').innerText = sl.toFixed(decimals);
-                document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
-
-                document.getElementById('sd-range').innerText = `${(entry - (pipDistance/2)).toFixed(decimals)} - ${entry.toFixed(decimals)}`;
-                document.getElementById('snr-val').innerText = sl.toFixed(decimals);
-                document.getElementById('key-val').innerText = tp.toFixed(decimals);
-
-            } catch (error) {
-                alert('Gagal mengambil data harga live. Pastikan koneksi internet stabil.');
-                console.error(error);
-            } finally {
-                btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
-            }
-        }
-    <script>
-    async function runAnalysis() {
-        const sym = document.getElementById('symbol').value;
-        const btn = document.getElementById('analyze-btn');
-        
-        btn.innerHTML = '<span>FETCHING LIVE MARKET...</span> ⏳';
-        
-        let livePrice = 0;
-        let decimals = 2;
-        let pipDistance = 50.00; // Skala pips dasar
-
-        try {
-            if (sym === 'BTCUSD') {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-                const data = await res.json();
-                livePrice = parseFloat(data.price);
-                decimals = 2;
-                pipDistance = 110.00; // Jarak pullback ideal untuk BTC (sekitar $110 ke sumbu bawah)
-            } else if (sym === 'XAUUSD') {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-                const data = await res.json();
-                livePrice = parseFloat(data.price);
-                decimals = 2;
-                pipDistance = 5.00; // Jarak pullback ideal Emas ($5.00)
-            } else if (sym === 'EURUSD') {
-                const res = await fetch('https://open.er-api.com/v6/latest/EUR');
-                const data = await res.json();
-                livePrice = parseFloat(data.rates.USD);
-                decimals = 5;
-                pipDistance = 0.00300;
-            }
-
-            // Logika Pullback ke Sumbu/Base Engulfing
-            const entry = livePrice - pipDistance;               // Buy Limit di area sumbu/base bawah (contoh: 62954)
-            const sl = entry - (pipDistance * 0.8);              // SL di bawah ekor sumbu
-            const tp = livePrice + (pipDistance * 0.3);          // TP di atas running high (Resistance)
-
-            const demandLow = (entry - (pipDistance * 0.3)).toFixed(decimals);
-            const demandHigh = entry.toFixed(decimals);
-
-            // Update UI Dashboard
-            document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
-            document.getElementById('sl-val').innerText = sl.toFixed(decimals);
-            document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
-
-            document.getElementById('sd-range').innerText = `${demandLow} - ${demandHigh}`;
-            document.getElementById('snr-val').innerText = sl.toFixed(decimals);
-            document.getElementById('key-val').innerText = tp.toFixed(decimals);
-
-        } catch (error) {
-            alert('Gagal mengambil data harga live. Pastikan koneksi internet stabil.');
-            console.error(error);
-        } finally {
-            btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
-        }
-    }
 <script>
     async function runAnalysis() {
         const sym = document.getElementById('symbol').value;
         const btn = document.getElementById('analyze-btn');
         
-        btn.innerHTML = '<span>FETCHING LIVE MARKET...</span> ⏳';
-        
-        let livePrice = 0;
+        btn.innerHTML = '<span>ANALYZING MULTI-CONFIRMATION...</span> ⏳';
+
+        let apiSymbol = 'BTCUSDT';
         let decimals = 2;
-        let pullbackOffset = 110.00; // Jarak diskon pullback ke sumbu bawah
+
+        if (sym === 'BTCUSD') {
+            apiSymbol = 'BTCUSDT';
+            decimals = 2;
+        } else if (sym === 'XAUUSD') {
+            apiSymbol = 'PAXGUSDT';
+            decimals = 2;
+        } else if (sym === 'EURUSD') {
+            apiSymbol = 'EURUSDT';
+            decimals = 5;
+        }
 
         try {
-            if (sym === 'BTCUSD') {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-                const data = await res.json();
-                livePrice = parseFloat(data.price);
-                decimals = 2;
-                pullbackOffset = 110.00; // Mengunci pullback BTC ke area sumbu bawah (62954)
-            } else if (sym === 'XAUUSD') {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-                const data = await res.json();
-                livePrice = parseFloat(data.price);
-                decimals = 2;
-                pullbackOffset = 5.00;
-            } else if (sym === 'EURUSD') {
-                const res = await fetch('https://open.er-api.com/v6/latest/EUR');
-                const data = await res.json();
-                livePrice = parseFloat(data.rates.USD);
-                decimals = 5;
-                pullbackOffset = 0.00300;
+            // Ambil 20 Candle H1 Terakhir untuk Analisis Trend & SNR/SND
+            const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${apiSymbol}&interval=1h&limit=20`);
+            const candles = await response.json();
+
+            // Data Candle Terakhir
+            const currentCandle = candles[candles.length - 1];
+            const engCandle = candles[candles.length - 2];  // Candle Engulfing
+            const prevCandle = candles[candles.length - 3]; // Candle Sebelum Engulfing
+
+            const currentPrice = parseFloat(currentCandle[4]);
+
+            // Data OHLC Engulfing
+            const engOpen = parseFloat(engCandle[1]);
+            const engHigh = parseFloat(engCandle[2]);
+            const engLow = parseFloat(engCandle[3]);
+            const engClose = parseFloat(engCandle[4]);
+
+            // Data OHLC Prev Candle
+            const prevOpen = parseFloat(prevCandle[1]);
+            const prevClose = parseFloat(prevCandle[4]);
+
+            // 1. CEK POLA ENGULFING
+            const isBullishEngulfing = (prevClose < prevOpen) && (engClose > engOpen) && (engClose > prevOpen) && (engOpen < prevClose);
+            const isBearishEngulfing = (prevClose > prevOpen) && (engClose < engOpen) && (engClose < prevOpen) && (engOpen > prevClose);
+
+            // 2. CEK TREND UTAMA H1 (Simple MA20 Alignment)
+            let sumClose = 0;
+            candles.forEach(c => sumClose += parseFloat(c[4]));
+            const ma20 = sumClose / candles.length;
+
+            const isH1Uptrend = currentPrice > ma20;
+            const isH1Downtrend = currentPrice < ma20;
+
+            // 3. CEK SUPPORT & RESISTANCE (SNR / SND)
+            let highestHigh = -Infinity;
+            let lowestLow = Infinity;
+
+            for (let i = 0; i < candles.length - 2; i++) {
+                const h = parseFloat(candles[i][2]);
+                const l = parseFloat(candles[i][3]);
+                if (h > highestHigh) highestHigh = h;
+                if (l < lowestLow) lowestLow = l;
             }
 
-            // KUNCI UTAMA: Entry dipaksa berada di area Pullback (Sumbu Engulfing)
-            const entry = livePrice - pullbackOffset;          // Titik Buy Limit di sumbu bawah
-            const sl = entry - 50.00;                          // Stop Loss di bawah sumbu
-            const tp = livePrice + 50.00;                      // Take Profit kembali ke running high
+            // FILTER KETAT & KONFIRMASI
+            let signal = "NO SETUP ⏳";
+            let entry = 0;
+            let sl = 0;
+            let tp = 0;
+            let demandLow = 0;
+            let demandHigh = 0;
+            let isConfirmed = false;
 
-            const demandLow = (entry - 25.00).toFixed(decimals);
-            const demandHigh = entry.toFixed(decimals);
+            // VALIDASI SETUP BUY
+            if (isBullishEngulfing && isH1Uptrend) {
+                // Zone Pullback pada Sumbu Bawah Candle Engulfing
+                demandLow = engLow;
+                demandHigh = engOpen;
+                entry = (engLow + engOpen) / 2; // Midpoint sumbu bawah
+                
+                sl = engLow - (entry * 0.001); // SL di bawah ekor
+                tp = engClose + (entry - sl) * 1.5; // RR 1:1.5
 
-            // Update UI
-            document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
-            document.getElementById('sl-val').innerText = sl.toFixed(decimals);
-            document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
+                // Konfirmasi Price Action: Running price tidak boleh jauh meninggalkan Zone Pullback
+                if (currentPrice <= (engClose + (entry - sl))) {
+                    signal = "BUY ↗️";
+                    isConfirmed = true;
+                }
+            } 
+            // VALIDASI SETUP SELL
+            else if (isBearishEngulfing && isH1Downtrend) {
+                // Zone Pullback pada Sumbu Atas Candle Engulfing
+                demandLow = engOpen;
+                demandHigh = engHigh;
+                entry = (engHigh + engOpen) / 2; // Midpoint sumbu atas
+                
+                sl = engHigh + (entry * 0.001); // SL di atas ekor
+                tp = engClose - (sl - entry) * 1.5; // RR 1:1.5
 
-            document.getElementById('sd-range').innerText = `${demandLow} - ${demandHigh}`;
-            document.getElementById('snr-val').innerText = sl.toFixed(decimals);
-            document.getElementById('key-val').innerText = tp.toFixed(decimals);
+                // Konfirmasi Price Action
+                if (currentPrice >= (engClose - (sl - entry))) {
+                    signal = "SELL ↘️";
+                    isConfirmed = true;
+                }
+            }
+
+            // UPDATE TAMPILAN DASHBOARD
+            const directionElem = document.querySelector('.card-bg .text-xl');
+            if (directionElem) directionElem.innerText = signal;
+
+            if (isConfirmed) {
+                document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
+                document.getElementById('sl-val').innerText = sl.toFixed(decimals);
+                document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
+
+                document.getElementById('sd-range').innerText = `${demandLow.toFixed(decimals)} - ${demandHigh.toFixed(decimals)}`;
+                document.getElementById('snr-val').innerText = lowestLow.toFixed(decimals);
+                document.getElementById('key-val').innerText = highestHigh.toFixed(decimals);
+            } else {
+                // JIKA KONFIRMASI KURANG / TIDAK ADA SETUP
+                document.getElementById('entry-zone').innerText = "WAIT";
+                document.getElementById('sl-val').innerText = "WAIT";
+                document.getElementById('tp1-val').innerText = "WAIT";
+
+                document.getElementById('sd-range').innerText = "NO ZONE";
+                document.getElementById('snr-val').innerText = lowestLow.toFixed(decimals);
+                document.getElementById('key-val').innerText = highestHigh.toFixed(decimals);
+            }
 
         } catch (error) {
-            alert('Gagal mengambil data pasar live.');
+            alert('Gagal mengambil atau menganalisis data pasar H1.');
             console.error(error);
         } finally {
             btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
         }
     }
 </script>
-
-
