@@ -3,7 +3,7 @@
         const sym = document.getElementById('symbol').value;
         const btn = document.getElementById('analyze-btn');
         
-        btn.innerHTML = '<span>ANALYZING MULTI-CONFIRMATION...</span> ⏳';
+        btn.innerHTML = '<span>SCANNING CONFIRMATIONS...</span> ⏳';
 
         let apiSymbol = 'BTCUSDT';
         let decimals = 2;
@@ -20,32 +20,32 @@
         }
 
         try {
-            // Ambil 20 Candle H1 Terakhir untuk Analisis Trend & SNR/SND
+            // Fetch 20 Candle H1 dari Binance
             const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${apiSymbol}&interval=1h&limit=20`);
             const candles = await response.json();
 
-            // Data Candle Terakhir
+            // Data Candle
             const currentCandle = candles[candles.length - 1];
-            const engCandle = candles[candles.length - 2];  // Candle Engulfing
-            const prevCandle = candles[candles.length - 3]; // Candle Sebelum Engulfing
+            const engCandle = candles[candles.length - 2];  
+            const prevCandle = candles[candles.length - 3]; 
 
             const currentPrice = parseFloat(currentCandle[4]);
 
-            // Data OHLC Engulfing
+            // OHLC Engulfing Candle
             const engOpen = parseFloat(engCandle[1]);
             const engHigh = parseFloat(engCandle[2]);
             const engLow = parseFloat(engCandle[3]);
             const engClose = parseFloat(engCandle[4]);
 
-            // Data OHLC Prev Candle
+            // OHLC Previous Candle
             const prevOpen = parseFloat(prevCandle[1]);
             const prevClose = parseFloat(prevCandle[4]);
 
-            // 1. CEK POLA ENGULFING
+            // 1. Validasi Pola Engulfing
             const isBullishEngulfing = (prevClose < prevOpen) && (engClose > engOpen) && (engClose > prevOpen) && (engOpen < prevClose);
             const isBearishEngulfing = (prevClose > prevOpen) && (engClose < engOpen) && (engClose < prevOpen) && (engOpen > prevClose);
 
-            // 2. CEK TREND UTAMA H1 (Simple MA20 Alignment)
+            // 2. Trend H1 (Moving Average 20)
             let sumClose = 0;
             candles.forEach(c => sumClose += parseFloat(c[4]));
             const ma20 = sumClose / candles.length;
@@ -53,10 +53,9 @@
             const isH1Uptrend = currentPrice > ma20;
             const isH1Downtrend = currentPrice < ma20;
 
-            // 3. CEK SUPPORT & RESISTANCE (SNR / SND)
+            // 3. Level SNR (Support & Resistance)
             let highestHigh = -Infinity;
             let lowestLow = Infinity;
-
             for (let i = 0; i < candles.length - 2; i++) {
                 const h = parseFloat(candles[i][2]);
                 const l = parseFloat(candles[i][3]);
@@ -64,8 +63,7 @@
                 if (l < lowestLow) lowestLow = l;
             }
 
-            // FILTER KETAT & KONFIRMASI
-            let signal = "NO SETUP ⏳";
+            // Evaluasi Konfirmasi Sinyal
             let entry = 0;
             let sl = 0;
             let tp = 0;
@@ -73,43 +71,29 @@
             let demandHigh = 0;
             let isConfirmed = false;
 
-            // VALIDASI SETUP BUY
             if (isBullishEngulfing && isH1Uptrend) {
-                // Zone Pullback pada Sumbu Bawah Candle Engulfing
                 demandLow = engLow;
                 demandHigh = engOpen;
                 entry = (engLow + engOpen) / 2; // Midpoint sumbu bawah
-                
-                sl = engLow - (entry * 0.001); // SL di bawah ekor
-                tp = engClose + (entry - sl) * 1.5; // RR 1:1.5
+                sl = engLow - 50.00;
+                tp = currentPrice + 100.00;
 
-                // Konfirmasi Price Action: Running price tidak boleh jauh meninggalkan Zone Pullback
-                if (currentPrice <= (engClose + (entry - sl))) {
-                    signal = "BUY ↗️";
+                if (currentPrice <= (engClose + 100.00)) {
                     isConfirmed = true;
                 }
-            } 
-            // VALIDASI SETUP SELL
-            else if (isBearishEngulfing && isH1Downtrend) {
-                // Zone Pullback pada Sumbu Atas Candle Engulfing
+            } else if (isBearishEngulfing && isH1Downtrend) {
                 demandLow = engOpen;
                 demandHigh = engHigh;
                 entry = (engHigh + engOpen) / 2; // Midpoint sumbu atas
-                
-                sl = engHigh + (entry * 0.001); // SL di atas ekor
-                tp = engClose - (sl - entry) * 1.5; // RR 1:1.5
+                sl = engHigh + 50.00;
+                tp = currentPrice - 100.00;
 
-                // Konfirmasi Price Action
-                if (currentPrice >= (engClose - (sl - entry))) {
-                    signal = "SELL ↘️";
+                if (currentPrice >= (engClose - 100.00)) {
                     isConfirmed = true;
                 }
             }
 
-            // UPDATE TAMPILAN DASHBOARD
-            const directionElem = document.querySelector('.card-bg .text-xl');
-            if (directionElem) directionElem.innerText = signal;
-
+            // Update UI Tampilan Dashboard
             if (isConfirmed) {
                 document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
                 document.getElementById('sl-val').innerText = sl.toFixed(decimals);
@@ -119,8 +103,8 @@
                 document.getElementById('snr-val').innerText = lowestLow.toFixed(decimals);
                 document.getElementById('key-val').innerText = highestHigh.toFixed(decimals);
             } else {
-                // JIKA KONFIRMASI KURANG / TIDAK ADA SETUP
-                document.getElementById('entry-zone').innerText = "WAIT";
+                // Tampilan jika syarat konfirmasi TIDAK TERPENUHI (Sinyal Ditolak)
+                document.getElementById('entry-zone').innerText = "NO SETUP";
                 document.getElementById('sl-val').innerText = "WAIT";
                 document.getElementById('tp1-val').innerText = "WAIT";
 
@@ -130,7 +114,7 @@
             }
 
         } catch (error) {
-            alert('Gagal mengambil atau menganalisis data pasar H1.');
+            alert('Gagal mengambil data dari server. Periksa koneksi internet Anda.');
             console.error(error);
         } finally {
             btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
