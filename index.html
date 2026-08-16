@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEBU DOLLAR - AI Market Analysis Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0b0f17; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        .card-bg { background: linear-gradient(145deg, #131b29, #0f1523); border: 1px solid #1e293b; }
+        .glow-btn { background: linear-gradient(90deg, #10b981, #0284c7); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        .glow-btn:hover { box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); }
+        .text-neon-green { color: #10b981; text-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+        .text-neon-red { color: #ef4444; }
+    </style>
+</head>
+<body class="p-4 md:p-8 max-w-xl mx-auto min-h-screen flex flex-col justify-between">
+    <div>
+        <!-- Top Navbar -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-1.5 text-yellow-500 font-bold text-xs">
+                <span>👑</span> <span>PREMIUM AI</span>
+            </div>
+            <div class="flex items-center space-x-2 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full text-xs text-emerald-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-semibold text-[11px]">SYSTEM READY</span>
+            </div>
+            <button class="text-slate-400 text-lg"><i class="fa-solid fa-bars"></i></button>
+        </div>
+
+        <!-- Logo Banner -->
+        <div class="text-center mb-6">
+            <div class="inline-block p-3 rounded-full border border-yellow-500/20 bg-yellow-500/5 mb-2">
+                <span class="text-4xl">💰</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-wider text-slate-100">SEBU DOLLAR</h1>
+            <p class="text-[11px] text-cyan-400 tracking-widest mt-0.5 font-semibold">TRADE & EDUCATION</p>
+            <div class="mt-3 inline-block bg-slate-800/80 border border-slate-700 px-4 py-1.5 rounded-full text-xs text-emerald-400 font-medium">
+                🤖 AI MARKET ANALYSIS DASHBOARD
+            </div>
+        </div>
+
+        <!-- Form Selection -->
+        <div class="card-bg rounded-xl p-5 mb-5 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-sm font-bold text-slate-200">MARKET ANALYSIS</h2>
+                    <p class="text-xs text-slate-400">H1 Engulfing + SND/SNR | M5 Entry (SL/TP 50 Pips RR 1:1)</p>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-cyan-400 font-bold text-xs">
+                    AI
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">PAIR / SYMBOL</label>
+                    <select id="symbol" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                        <option value="XAUUSD">🥇 XAUUSD</option>
+                        <option value="EURUSD">🇪🇺 EURUSD</option>
+                        <option value="GBPUSD">🇬🇧 GBPUSD</option>
+                        <option value="BTCUSD">₿ BTCUSD</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">TIMEFRAME</label>
+                    <select id="timeframe" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                        <option value="M5">⏱️ M5 (Entry Zone)</option>
+                        <option value="H1">⏱️ H1 (Trend & Engulfing)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="runAnalysis()" class="w-full glow-btn text-white font-bold py-3 rounded-lg flex items-center justify-center space-x-2 transition duration-200 text-xs tracking-wider">
+                <span>ANALYZE MARKET</span> 🚀
+            </button>
+        </div>
+
+        <!-- Analysis Overview -->
+        <div class="mb-5">
+            <div class="flex justify-between items-center mb-2.5">
+                <span class="text-xs font-bold text-cyan-400 tracking-wider">📉 ANALYSIS OVERVIEW</span>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">LIVE</span>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+                <div class="card-bg p-2.5 rounded-lg text-center">
+                    <p class="text-[9px] text-slate-400 mb-1">TREND H1 ↗️</p>
+                    <p id="trend-val" class="text-xs font-extrabold text-neon-green">BULLISH</p>
+                    <p class="text-[8px] text-emerald-400 mt-0.5">Engulfing H1</p>
+                </div>
+                <div class="card-bg p-2.5 rounded-lg text-center">
+                    <p class="text-[9px] text-slate-400 mb-1">ENTRY M5</p>
+                    <p id="entry-status" class="text-xs font-bold text-emerald-400">CONFIRMED</p>
+                    <p class="text-[8px] text-slate-400 mt-0.5">M5 Price Action</p>
+                </div>
+                <div class="card-bg p-2.5 rounded-lg text-center">
+                    <p class="text-[9px] text-slate-400 mb-1">⚖️ BIAS</p>
+                    <p id="bias-val" class="text-xs font-bold text-emerald-400">LONG</p>
+                    <p class="text-[8px] text-slate-400 mt-0.5">SND Demand</p>
+                </div>
+                <div class="card-bg p-2.5 rounded-lg text-center">
+                    <p class="text-[9px] text-slate-400 mb-1">🛡️ CONFIDENCE</p>
+                    <p id="conf-val" class="text-xs font-bold text-slate-100">85%</p>
+                    <div class="w-full bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                        <div id="conf-bar" class="bg-emerald-400 h-full" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Trade Setup -->
+        <div class="card-bg rounded-xl p-4 mb-5 border-emerald-500/30">
+            <div class="flex items-center space-x-2 mb-3">
+                <span class="text-xs font-bold text-cyan-400">🎯 AI TRADE SETUP (RR 1:1 | 50 PIPS)</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2.5">
+                <!-- Direction -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2.5 text-center flex flex-col justify-center items-center">
+                    <span class="text-[9px] text-slate-400 mb-0.5">DIRECTION ↗️</span>
+                    <span id="direction-val" class="text-lg font-extrabold text-neon-green">BUY</span>
+                    <span class="text-xl mt-0.5">🐂</span>
+                </div>
+
+                <!-- Parameters -->
+                <div class="col-span-2 grid grid-cols-2 gap-2">
+                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                        <p class="text-[8px] text-slate-400">ENTRY ZONE (M5)</p>
+                        <p id="entry-zone" class="text-[11px] font-bold text-slate-200">2350.00</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                        <p class="text-[8px] text-slate-400">STOP LOSS (-50 Pips)</p>
+                        <p id="sl-val" class="text-[11px] font-bold text-neon-red">2345.00</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                        <p class="text-[8px] text-slate-400">TAKE PROFIT (+50 Pips)</p>
+                        <p id="tp1-val" class="text-[11px] font-bold text-neon-green">2355.00</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                        <p class="text-[8px] text-slate-400">RISK REWARD</p>
+                        <p id="rr-val" class="text-[11px] font-bold text-amber-400">1 : 1.00</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                        <p class="text-[8px] text-slate-400">REWARD DISTANCE</p>
+                        <p class="text-[11px] font-bold text-emerald-400">50 Pips ($5.00)</p>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+                        <p class="text-[8px] text-slate-400">RISK DISTANCE</p>
+                        <p class="text-[11px] font-bold text-red-400">50 Pips ($5.00)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Insights -->
+        <div class="mb-5">
+            <span class="text-xs font-bold text-cyan-400 tracking-wider block mb-2.5">💡 MARKET INSIGHTS</span>
+            <div class="grid grid-cols-4 gap-2">
+                <div class="card-bg p-2 rounded text-center">
+                    <p class="text-[8px] text-slate-400 mb-0.5">SUPPLY / DEMAND</p>
+                    <p id="sd-val" class="text-[9px] font-bold text-emerald-400">DEMAND ZONE</p>
+                    <p id="sd-range" class="text-[8px] text-slate-400">2345.00 - 2350.00</p>
+                </div>
+                <div class="card-bg p-2 rounded text-center">
+                    <p class="text-[8px] text-slate-400 mb-0.5">SNR LEVEL</p>
+                    <p id="snr-label" class="text-[9px] font-bold text-cyan-400">SUPPORT H1</p>
+                    <p id="snr-val" class="text-[8px] text-slate-400">2345.00</p>
+                </div>
+                <div class="card-bg p-2 rounded text-center">
+                    <p class="text-[8px] text-slate-400 mb-0.5">KEY LEVEL</p>
+                    <p id="key-label" class="text-[9px] font-bold text-red-400">RESISTANCE H1</p>
+                    <p id="key-val" class="text-[8px] text-slate-400">2360.00</p>
+                </div>
+                <div class="card-bg p-2 rounded text-center">
+                    <p class="text-[8px] text-slate-400 mb-0.5">VOLATILITY</p>
+                    <p id="vol-val" class="text-[9px] font-bold text-amber-400">MEDIUM</p>
+                    <p class="text-[8px] text-slate-400">ACTIVE</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-lg p-2 text-center mb-6">
+            <p class="text-[9px] text-amber-400 font-medium">
+                ⚠️ Analisis ini hanya alat bantu. Selalu lakukan konfirmasi sendiri sebelum mengambil keputusan trading.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center border-t border-slate-800 pt-3 flex justify-between items-center text-[9px] text-slate-500">
+        <div class="text-left">
+            <p class="font-bold text-slate-400">SEBU DOLLAR AI</p>
+            <p>Trade Smarter, Not Harder.</p>
+        </div>
+        <div class="text-right">
+            <p>© 2026 SEBU DOLLAR AI 🔒</p>
+            <p>All Rights Reserved</p>
+        </div>
+    </div>
+
+    <script>
+        function runAnalysis() {
+            const sym = document.getElementById('symbol').value;
+            let entry = sym === 'XAUUSD' ? 2350.00 : (sym === 'EURUSD' ? 1.08500 : 1.26500);
+            let pips = sym === 'XAUUSD' ? 5.00 : 0.00500;
+
+            document.getElementById('entry-zone').innerText = entry.toFixed(sym==='XAUUSD'?2:5);
+            document.getElementById('sl-val').innerText = (entry - pips).toFixed(sym==='XAUUSD'?2:5);
+            document.getElementById('tp1-val').innerText = (entry + pips).toFixed(sym==='XAUUSD'?2:5);
+        }
+    </script>
+</body>
+</html>
