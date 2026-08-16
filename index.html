@@ -210,6 +210,65 @@
             document.getElementById('sl-val').innerText = (entry - pips).toFixed(sym==='XAUUSD'?2:5);
             document.getElementById('tp1-val').innerText = (entry + pips).toFixed(sym==='XAUUSD'?2:5);
         }
-    </script>
-</body>
-</html>
+<script>
+    async function runAnalysis() {
+        const sym = document.getElementById('symbol').value;
+        const btn = document.querySelector('button[onclick="runAnalysis()"]');
+        
+        // Indikator Loading pada tombol
+        btn.innerHTML = '<span>FETCHING LIVE MARKET...</span> ⏳';
+        
+        let livePrice = 0;
+        let decimals = 2;
+        let pipDistance = 5.00; // Standar 50 pips untuk XAUUSD ($5.00)
+
+        try {
+            if (sym === 'BTCUSD') {
+                // Mengambil harga live Bitcoin dari Binance API
+                const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+                const data = await response.json();
+                livePrice = parseFloat(data.price);
+                decimals = 2;
+                pipDistance = 50.00; // 50 pips BTC
+            } else if (sym === 'XAUUSD') {
+                // Mengambil harga live Emas dari Binance (PAXGUSDT sebagai acuan harga Emas spot)
+                const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+                const data = await response.json();
+                livePrice = parseFloat(data.price);
+                decimals = 2;
+                pipDistance = 5.00; // 50 pips XAUUSD ($5.00)
+            } else if (sym === 'EURUSD') {
+                // Acuan Forex
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+                const data = await response.json();
+                livePrice = parseFloat(data.rates.USD);
+                decimals = 5;
+                pipDistance = 0.00500; // 50 pips EURUSD
+            }
+
+            // Perhitungan Entry, SL (50 Pips), TP (50 Pips) RR 1:1
+            const entry = livePrice;
+            const sl = entry - pipDistance;
+            const tp = entry + pipDistance;
+
+            // Update UI dengan harga terbaru
+            document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
+            document.getElementById('sl-val').innerText = sl.toFixed(decimals);
+            document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
+
+            // Update area Market Insights (SND & SNR menyesuaikan harga running)
+            document.getElementById('sd-range').innerText = `${(entry - 2).toFixed(decimals)} - ${entry.toFixed(decimals)}`;
+            document.getElementById('snr-val').innerText = (entry - pipDistance).toFixed(decimals);
+            document.getElementById('key-val').innerText = (entry + pipDistance).toFixed(decimals);
+
+        } catch (error) {
+            alert('Gagal mengambil data harga pasar live. Periksa koneksi internet Anda.');
+            console.error(error);
+        } finally {
+            btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
+        }
+    }
+</script>
+
+
+
