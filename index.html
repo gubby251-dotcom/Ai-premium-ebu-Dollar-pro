@@ -1,123 +1,205 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEBU DOLLAR AI — XAUUSD Signal</title>
+<script src="https://unpkg.com/lightweight-charts@5.0.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{--bg:#05080c;--card:#0b1016;--line:#1c2731;--gold:#f4c84b;--green:#32e875;--cyan:#16d9ee;--red:#ff5252;--text:#edf2f7;--muted:#8e9aa8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#13212a 0,#05080c 38%);color:var(--text);font-family:Inter,Arial,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center}.premium{color:var(--gold);font-weight:800}.ready{background:#082316;border:1px solid #176f43;color:#45f08a;padding:9px 14px;border-radius:22px;font-size:13px}
+.hero{text-align:center;padding:18px 0 22px}.logo{font-size:58px;font-weight:900;letter-spacing:-4px;background:linear-gradient(90deg,#f3c548,#8cc6ef,#eee);-webkit-background-clip:text;color:transparent}.sub{color:#87a4c1;font-size:18px;letter-spacing:2px}.tag{display:inline-block;margin-top:12px;border:1px solid #bd9a36;color:#e8c65a;border-radius:18px;padding:8px 18px;font-weight:700}
+.card{background:linear-gradient(145deg,#0d131a,#080d12);border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 12px 35px #0008}.title{font-size:21px;font-weight:800;color:var(--cyan);margin-bottom:16px}.grid2,.grid4{display:grid;gap:12px}.grid2{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:repeat(4,1fr)}label{font-size:12px;color:var(--gold);display:block;margin-bottom:7px}.input,select,button{width:100%;border:1px solid #28343f;background:#0c1218;color:#fff;border-radius:11px;padding:14px;font-size:15px}button{cursor:pointer;font-weight:900}.analyze{margin-top:14px;background:linear-gradient(90deg,#25d63d,#0dbce8);border:0;font-size:17px}.metric{border:1px solid #1e2a34;border-radius:12px;padding:16px;min-height:112px;text-align:center}.metric .k{font-size:12px;color:#9aa6b2}.metric .v{font-size:23px;font-weight:900;margin-top:13px}.bull,.buy,.good{color:var(--green)}.sell,.bad{color:var(--red)}.wait{color:#f0c642}.setup{display:grid;grid-template-columns:1.1fr 2fr;gap:12px}.direction{display:flex;flex-direction:column;justify-content:center;align-items:center;border:1px solid #20302c;border-radius:14px;min-height:210px}.direction b{font-size:36px}.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.tile{border:1px solid #202c36;border-radius:11px;padding:15px}.tile span{display:block;color:#8e9aa8;font-size:12px}.tile strong{display:block;margin-top:8px;font-size:18px}.checks{display:grid;grid-template-columns:1fr 1fr;gap:9px}.check{padding:12px;border-radius:10px;background:#0c1319;border:1px solid #1e2932}.check.ok{border-color:#17633d}.check.no{border-color:#61302f}.small{font-size:12px;color:var(--muted);line-height:1.5}
+.chart{height:360px;margin-top:14px}.footer{color:#788592;text-align:center;font-size:12px;padding:20px}.warn{color:#f2c44b;text-align:center;font-size:12px}@media(max-width:800px){.grid4{grid-template-columns:1fr 1fr}.setup{grid-template-columns:1fr}.tiles{grid-template-columns:1fr 1fr}.logo{font-size:42px}.chart{height:300px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><div class="premium">♛ PREMIUM AI</div><div class="ready" id="status">● CONNECTING...</div></div>
+<div class="hero"><div class="logo">$EBU DOLLAR</div><div class="sub">TRADE & EDUCATION</div><div class="tag">✦ AI MARKET ANALYSIS DASHBOARD</div></div>
+
+<div class="card">
+<div class="title">▥ MARKET ANALYSIS</div>
+<div class="grid2">
+<div><label>PAIR / SYMBOL</label><select id="symbol"><option>XAU/USD</option></select></div>
+<div><label>ENTRY TIMEFRAME</label><select id="tf"><option value="5min">M5</option><option value="15min">M15</option></select></div>
+</div>
+<div class="grid2" style="margin-top:10px">
+<div><label>TWELVE DATA API KEY</label><input class="input" id="key" placeholder="Masukkan API key Twelve Data"></div>
+<div><label>REFRESH SINYAL</label><select id="interval"><option value="180">Setiap 3 Menit (Aman/Hemat)</option><option value="300">Setiap 5 Menit</option><option value="0">Manual</option></select></div>
+</div>
+<button class="analyze" onclick="analyze()">ANALYZE MARKET 🚀</button>
+<div class="small" style="margin-top:10px">Harga Live Price diperbarui otomatis secara real-time. Masukkan API key Twelve Data lalu klik Analyze untuk mengaktifkan analisis chart dan sinyal AI.</div>
+</div>
+
+<div class="card">
+<div class="title">◉ XAU/USD LIVE PRICE <span style="float:right;color:#45f08a;font-size:12px" id="priceLiveDot">● CONNECTING...</span></div>
+<div style="text-align:center;padding:8px 0 14px">
+  <div id="livePrice" style="font-size:46px;font-weight:900;letter-spacing:-1px">—</div>
+  <div id="liveChange" class="small" style="font-size:15px;margin-top:7px">Menghubungkan ke Stream Harga Real-Time...</div>
+  <div id="liveUpdated" class="small" style="margin-top:7px">Belum ada pembaruan</div>
+</div>
+</div>
+
+<div class="card"><div class="title">〽 ANALYSIS OVERVIEW <span style="float:right;color:#35ed83;font-size:12px">● LIVE</span></div>
+<div class="grid4">
+<div class="metric"><div class="k">TREND H1 ↗</div><div class="v" id="trend">WAITING</div></div>
+<div class="metric"><div class="k">ENTRY M5</div><div class="v" id="entry">WAITING</div></div>
+<div class="metric"><div class="k">BIAS</div><div class="v" id="bias">WAITING</div></div>
+<div class="metric"><div class="k">CONFIDENCE</div><div class="v" id="confidence">—</div></div>
+</div></div>
+
+<div class="card"><div class="title">◎ AI TRADE SETUP</div>
+<div class="setup"><div class="direction"><span>DIRECTION</span><b id="direction">NO SIGNAL</b><div id="directionIcon">—</div></div>
+<div class="tiles">
+<div class="tile"><span>ENTRY ZONE</span><strong id="zone">—</strong></div>
+<div class="tile"><span>STOP LOSS</span><strong class="bad" id="sl">—</strong></div>
+<div class="tile"><span>TAKE PROFIT 1</span><strong class="good" id="tp1">—</strong></div>
+<div class="tile"><span>TAKE PROFIT 2</span><strong class="good" id="tp2">—</strong></div>
+<div class="tile"><span>TAKE PROFIT 3</span><strong class="good" id="tp3">—</strong></div>
+<div class="tile"><span>RISK : REWARD</span><strong id="rr">—</strong></div>
+</div></div></div>
+
+<div class="card"><div class="title">✓ CONFIRMATION ENGINE</div>
+<div class="checks" id="checks"></div>
+<div class="small" style="margin-top:12px">Syarat sinyal: trend H1 + struktur + engulfing M5 + pullback zone + SNR/SND + price action. Jika konfirmasi inti belum lengkap, hasil tetap NO SIGNAL.</div></div>
+
+<div class="card"><div class="title">◉ MARKET INSIGHTS</div>
+<div class="grid4">
+<div class="metric"><div class="k">SUPPLY / DEMAND</div><div class="v" id="sd">—</div></div>
+<div class="metric"><div class="k">SNR LEVEL</div><div class="v" id="snr">—</div></div>
+<div class="metric"><div class="k">KEY LEVEL</div><div class="v" id="keylevel">—</div></div>
+<div class="metric"><div class="k">VOLATILITY</div><div class="v" id="vol">—</div></div>
+</div></div>
+
+<div class="card"><div class="title">◌ PRICE CHART</div><div id="chart" class="chart"></div></div>
+<div class="warn">⚠ Analisis ini hanya alat bantu. Selalu lakukan konfirmasi sendiri sebelum mengambil keputusan trading.</div>
+<div class="footer">$EBU DOLLAR AI · Trade Smarter, Not Harder.</div>
+</div>
+
 <script>
-    async function runAnalysis() {
-        const sym = document.getElementById('symbol').value;
-        const btn = document.getElementById('analyze-btn');
-        
-        btn.innerHTML = '<span>SCANNING CONFIRMATIONS...</span> ⏳';
+let chart,series,data=[];
+const $=id=>document.getElementById(id);
+function fmt(x){return x==null?'—':Number(x).toFixed(2)}
+function setCheck(name,ok,detail){return `<div class="check ${ok?'ok':'no'}"><b>${ok?'✓':'✕'} ${name}</b><div class="small">${detail}</div></div>`}
+function ema(a,n){let k=2/(n+1),e=a[0];for(let i=1;i<a.length;i++)e=a[i]*k+e*(1-k);return e}
+function atr(c,n=14){let r=[];for(let i=1;i<c.length;i++)r.push(Math.max(c[i].high-c[i].low,Math.abs(c[i].high-c[i-1].close),Math.abs(c[i].low-c[i-1].close)));return r.slice(-n).reduce((a,b)=>a+b,0)/Math.min(n,r.length)}
 
-        let apiSymbol = 'BTCUSDT';
-        let decimals = 2;
+function draw(){
+  if(!chart){
+    chart=LightweightCharts.createChart($('chart'),{layout:{background:{color:'#080d12'},textColor:'#aeb8c2'},grid:{vertLines:{color:'#121b23'},horzLines:{color:'#121b23'}},rightPriceScale:{borderColor:'#23303a'},timeScale:{borderColor:'#23303a'}});
+    series=chart.addSeries(LightweightCharts.CandlestickSeries,{upColor:'#24e66a',downColor:'#ff4f55',borderVisible:false,wickUpColor:'#24e66a',wickDownColor:'#ff4f55'});
+  }
+  if(data.length > 0){
+    series.setData(data);
+    chart.timeScale().fitContent();
+  }
+}
 
-        if (sym === 'BTCUSD') {
-            apiSymbol = 'BTCUSDT';
-            decimals = 2;
-        } else if (sym === 'XAUUSD') {
-            apiSymbol = 'PAXGUSDT';
-            decimals = 2;
-        } else if (sym === 'EURUSD') {
-            apiSymbol = 'EURUSDT';
-            decimals = 5;
-        }
+function initWebSocket(){
+  const ws = new WebSocket('wss://stream.binance.com:9443/ws/xauusdt@ticker');
+  ws.onopen = () => {
+    $('priceLiveDot').textContent = '● LIVE';
+    $('priceLiveDot').style.color = '#45f08a';
+    $('status').textContent = '● SYSTEM ONLINE';
+    $('status').style.color = '#45f08a';
+  };
+  ws.onmessage = (event) => {
+    const d = JSON.parse(event.data);
+    const price = parseFloat(d.c);
+    const change = parseFloat(d.p);
+    const percent = parseFloat(d.P);
+    
+    $('livePrice').textContent = price.toFixed(2);
+    $('liveChange').textContent = (change >= 0 ? '▲ +' : '▼ ') + change.toFixed(2) + ' (' + percent.toFixed(2) + '%)';
+    $('liveChange').style.color = change >= 0 ? '#32e875' : '#ff5252';
+    $('liveUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString('id-ID');
+  };
+  ws.onerror = () => {
+    $('priceLiveDot').textContent = '● OFFLINE';
+    $('priceLiveDot').style.color = '#ff5252';
+  };
+  ws.onclose = () => { setTimeout(initWebSocket, 3000); };
+}
 
-        try {
-            // Fetch 20 Candle H1 dari Binance
-            const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${apiSymbol}&interval=1h&limit=20`);
-            const candles = await response.json();
-
-            // Data Candle
-            const currentCandle = candles[candles.length - 1];
-            const engCandle = candles[candles.length - 2];  
-            const prevCandle = candles[candles.length - 3]; 
-
-            const currentPrice = parseFloat(currentCandle[4]);
-
-            // OHLC Engulfing Candle
-            const engOpen = parseFloat(engCandle[1]);
-            const engHigh = parseFloat(engCandle[2]);
-            const engLow = parseFloat(engCandle[3]);
-            const engClose = parseFloat(engCandle[4]);
-
-            // OHLC Previous Candle
-            const prevOpen = parseFloat(prevCandle[1]);
-            const prevClose = parseFloat(prevCandle[4]);
-
-            // 1. Validasi Pola Engulfing
-            const isBullishEngulfing = (prevClose < prevOpen) && (engClose > engOpen) && (engClose > prevOpen) && (engOpen < prevClose);
-            const isBearishEngulfing = (prevClose > prevOpen) && (engClose < engOpen) && (engClose < prevOpen) && (engOpen > prevClose);
-
-            // 2. Trend H1 (Moving Average 20)
-            let sumClose = 0;
-            candles.forEach(c => sumClose += parseFloat(c[4]));
-            const ma20 = sumClose / candles.length;
-
-            const isH1Uptrend = currentPrice > ma20;
-            const isH1Downtrend = currentPrice < ma20;
-
-            // 3. Level SNR (Support & Resistance)
-            let highestHigh = -Infinity;
-            let lowestLow = Infinity;
-            for (let i = 0; i < candles.length - 2; i++) {
-                const h = parseFloat(candles[i][2]);
-                const l = parseFloat(candles[i][3]);
-                if (h > highestHigh) highestHigh = h;
-                if (l < lowestLow) lowestLow = l;
-            }
-
-            // Evaluasi Konfirmasi Sinyal
-            let entry = 0;
-            let sl = 0;
-            let tp = 0;
-            let demandLow = 0;
-            let demandHigh = 0;
-            let isConfirmed = false;
-
-            if (isBullishEngulfing && isH1Uptrend) {
-                demandLow = engLow;
-                demandHigh = engOpen;
-                entry = (engLow + engOpen) / 2; // Midpoint sumbu bawah
-                sl = engLow - 50.00;
-                tp = currentPrice + 100.00;
-
-                if (currentPrice <= (engClose + 100.00)) {
-                    isConfirmed = true;
-                }
-            } else if (isBearishEngulfing && isH1Downtrend) {
-                demandLow = engOpen;
-                demandHigh = engHigh;
-                entry = (engHigh + engOpen) / 2; // Midpoint sumbu atas
-                sl = engHigh + 50.00;
-                tp = currentPrice - 100.00;
-
-                if (currentPrice >= (engClose - 100.00)) {
-                    isConfirmed = true;
-                }
-            }
-
-            // Update UI Tampilan Dashboard
-            if (isConfirmed) {
-                document.getElementById('entry-zone').innerText = entry.toFixed(decimals);
-                document.getElementById('sl-val').innerText = sl.toFixed(decimals);
-                document.getElementById('tp1-val').innerText = tp.toFixed(decimals);
-
-                document.getElementById('sd-range').innerText = `${demandLow.toFixed(decimals)} - ${demandHigh.toFixed(decimals)}`;
-                document.getElementById('snr-val').innerText = lowestLow.toFixed(decimals);
-                document.getElementById('key-val').innerText = highestHigh.toFixed(decimals);
-            } else {
-                // Tampilan jika syarat konfirmasi TIDAK TERPENUHI (Sinyal Ditolak)
-                document.getElementById('entry-zone').innerText = "NO SETUP";
-                document.getElementById('sl-val').innerText = "WAIT";
-                document.getElementById('tp1-val').innerText = "WAIT";
-
-                document.getElementById('sd-range').innerText = "NO ZONE";
-                document.getElementById('snr-val').innerText = lowestLow.toFixed(decimals);
-                document.getElementById('key-val').innerText = highestHigh.toFixed(decimals);
-            }
-
-        } catch (error) {
-            alert('Gagal mengambil data dari server. Periksa koneksi internet Anda.');
-            console.error(error);
-        } finally {
-            btn.innerHTML = '<span>ANALYZE MARKET</span> 🚀';
-        }
+let updateTimer = null;
+async function fetchLive(){
+  let key = $('key').value.trim();
+  if(!key){ 
+    alert('Masukkan API Key Twelve Data untuk memuat Chart & Analisis.');
+    return; 
+  }
+  localStorage.setItem('sebu_twelve_key', key);
+  $('status').textContent = '● UPDATING ANALYSIS'; $('status').style.color = '#f4c84b';
+  
+  try{
+    let [h1, m5] = await Promise.all([
+      fetch(`https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=1h&outputsize=220&apikey=${encodeURIComponent(key)}`).then(r=>r.json()),
+      fetch(`https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=${$('tf').value}&outputsize=220&apikey=${encodeURIComponent(key)}`).then(r=>r.json())
+    ]);
+    
+    if(h1.status === 'error' || m5.status === 'error'){
+      throw Error(h1.message || m5.message || 'API Limit reached');
     }
+    
+    let H = h1.values.reverse().map(v=>({time:Math.floor(new Date(v.datetime).getTime()/1000),open:+v.open,high:+v.high,low:+v.low,close:+v.close}));
+    data = m5.values.reverse().map(v=>({time:Math.floor(new Date(v.datetime).getTime()/1000),open:+v.open,high:+v.high,low:+v.low,close:+v.close}));
+    
+    runAnalysis(H, data);
+    draw();
+    $('status').textContent = '● LIVE DATA'; $('status').style.color = '#45f08a';
+  }catch(e){
+    $('status').textContent = '● API ERROR'; $('status').style.color = '#ff5252';
+    alert('Gagal mengambil data: ' + e.message);
+  }
+}
+
+function scheduleLive(){
+  if(updateTimer) clearInterval(updateTimer);
+  const s = +$('interval').value;
+  if(s && $('key').value.trim()){
+    updateTimer = setInterval(fetchLive, s * 1000);
+  }
+}
+
+function analyze(){
+  fetchLive().then(scheduleLive);
+}
+
+function runAnalysis(H,M){
+  let hc=H.map(x=>x.close), mc=M.map(x=>x.close), last=M.at(-1), prev=M.at(-2), A=atr(M), e50=ema(hc,50),e200=ema(hc,200);
+  let trend=e50>e200?'BULLISH':'BEARISH', trendUp=trend==='BULLISH';
+  let bullEng=prev.close<prev.open&&last.close>last.open&&last.open<=prev.close&&last.close>=prev.open;
+  let bearEng=prev.close>prev.open&&last.close<last.open&&last.open>=prev.close&&last.close<=prev.open;
+  let eng=bullEng||bearEng, entryDir=bullEng?'BUY':bearEng?'SELL':'WAITING';
+  let swingLow=Math.min(...M.slice(-30).map(x=>x.low)),swingHigh=Math.max(...M.slice(-30).map(x=>x.high));
+  let zoneLow=bullEng?Math.min(prev.low,last.low):Math.max(prev.low,last.low);
+  let zoneHigh=bullEng?Math.max(prev.low,last.low):Min(prev.high,last.high);
+  let nearZone=bullEng?last.close>=zoneLow&&last.close<=zoneHigh+A*1.2:last.close<=zoneHigh&&last.close>=zoneLow-A*1.2;
+  let support=swingLow,resist=swingHigh;
+  let snrOk=trendUp?last.close>support+A*.5:last.close<resist-A*.5;
+  let priceAction=trendUp?last.close>prev.high: last.close<prev.low;
+  let direction=(trendUp&&bullEng&&nearZone&&snrOk&&priceAction)?'BUY':(!trendUp&&bearEng&&nearZone&&snrOk&&priceAction)?'SELL':'NO SIGNAL';
+  let score=0;score+=((trendUp&&bullEng)||(!trendUp&&bearEng))?25:0;score+=eng?20:0;score+=nearZone?20:0;score+=snrOk?15:0;score+=priceAction?20:0;
+  $('trend').textContent=trend;$('trend').className='v '+(trendUp?'bull':'sell');$('entry').textContent=entryDir;$('entry').className='v '+(eng?(bullEng?'bull':'sell'):'wait');$('bias').textContent=trendUp?'LONG':'SHORT';$('bias').className='v '+(trendUp?'bull':'sell');$('confidence').textContent=score+'%';$('confidence').className='v '+(score>=80?'good':score>=60?'wait':'bad');
+  $('direction').textContent=direction;$('direction').className=direction==='BUY'?'bull':direction==='SELL'?'sell':'wait';$('directionIcon').textContent=direction==='BUY'?'▲ BULLISH':direction==='SELL'?'▼ BEARISH':'WAITING';
+  let entry=last.close, sl=direction==='BUY'?zoneLow-A*.6:direction==='SELL'?zoneHigh+A*.6:null;
+  let risk=sl?Math.abs(entry-sl):0,tp1=sl?(direction==='BUY'?entry+risk*1.5:entry-risk*1.5):null,tp2=sl?(direction==='BUY'?entry+risk*2:entry-risk*2):null,tp3=sl?(direction==='BUY'?entry+risk*3:entry-risk*3):null;
+  $('zone').textContent=direction==='NO SIGNAL'?'—':fmt(Math.min(zoneLow,zoneHigh))+' – '+fmt(Math.max(zoneLow,zoneHigh));$('sl').textContent=fmt(sl);$('tp1').textContent=fmt(tp1);$('tp2').textContent=fmt(tp2);$('tp3').textContent=fmt(tp3);$('rr').textContent=sl?'1 : 1.50 / 2.00 / 3.00':'—';
+  $('sd').textContent=trendUp?'DEMAND':'SUPPLY';$('snr').textContent=trendUp?'SUPPORT '+fmt(support):'RESIST '+fmt(resist);$('keylevel').textContent=trendUp?'RESISTANCE '+fmt(resist):'SUPPORT '+fmt(support);let vol=A/last.close*100;$('vol').textContent=vol>.12?'HIGH':vol>.06?'MEDIUM':'LOW';
+  $('checks').innerHTML=setCheck('TREND H1',true,`EMA50 ${fmt(e50)} vs EMA200 ${fmt(e200)} → ${trend}`)+setCheck('ENGULFING M5',eng,eng?(bullEng?'Bullish engulfing':'Bearish engulfing'):'Belum ada engulfing valid')+setCheck('PULLBACK ZONE',nearZone,nearZone?'Harga dekat zone candle konfirmasi':'Harga belum masuk pullback zone')+setCheck('SNR / SND',snrOk,trendUp?'Support/SNR mendukung bias bullish':'Resistance/SNR mendukung bias bearish')+setCheck('PRICE ACTION',priceAction,priceAction?'Break/close mendukung arah':'Belum ada close konfirmasi')+setCheck('FINAL SIGNAL',direction!=='NO SIGNAL',direction==='NO SIGNAL'?'Konfirmasi inti belum lengkap':'Semua konfirmasi inti terpenuhi');
+}
+
+// Inisialisasi awal
+const savedKey = localStorage.getItem('sebu_twelve_key');
+if(savedKey) $('key').value = savedKey;
+
+initWebSocket();
+draw();
+if($('key').value.trim()) {
+  fetchLive().then(scheduleLive);
+}
 </script>
+</body>
+</html>
